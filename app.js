@@ -1,24 +1,23 @@
 var express = require('express');
-var path = require('path');
 var bodyParser = require('body-parser');
-var module = require('./module/module.js');
+var path = require('path');
+var Blog = require('./module/module.js')
 var app = express();
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname + '/public'));
 
+// ROUTES
 
-app.get('/users', function(req,res){
-	res.send(module.displayAll());
-});
-app.get('/users/:id', function(req,res){
-	res.send(module.displayId(req.params.id));
+app.get('/api/blogs', function(req, res) {
+	res.send(Blog.displayAll());	
 });
 
+app.get('/api/blogs/:id', function(req, res) {
+	res.send(Blog.displayId(req.params.id));	
+});
 
-
-app.listen(3000,function(){
-	console.log('Server 3000 port');
-})
+app.listen(3000, function(){
+	console.log('Server on 3000 port');
+});
