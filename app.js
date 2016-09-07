@@ -10,11 +10,11 @@ app.use(express.static(__dirname + '/public'));
 
 // ROUTES
 
-app.get('/api/blogs', function(req, res) {
+app.get('/api/users', function(req, res) {
 	res.send(Blog.displayAll());	
 });
 
-app.get('/api/blogs/:id', function(req, res) {
+app.get('/api/users/:id', function(req, res) {
 	res.send(Blog.displayId(req.params.id));	
 });
 

@@ -1,35 +1,38 @@
-var Blog = Backbone.Model.extend();
+$(function(){
+	window.app = {};
 
-var Blogs = Backbone.Collection.extend({	
-	url: '/api/blogs'
+	app.Blog = Backbone.Model.extend({
+		urlRoot: '/api/users'
+	});
+
+	app.BlogView = Backbone.View.extend({
+		el: $("#app"),
+		
+		model: new app.Blog({id: '1'}),
+
+		template: _.template($('#template').html()),		
+
+		initialize: function() {			
+			this.listenTo(this.model, 'change', this.render);
+			this.model.fetch({
+			    success: function (model) {
+			        console.log(JSON.stringify(model));
+			    }
+			});								
+		},
+
+		render: function() {			
+			console.log(this.model);
+					
+			this.$el.html(this.template(this.model.attributes[0]));
+			
+		}
+	});
+
+	
+	(function(){
+		new app.BlogView();			
+	})();
+	
 });
 
-var BlogView = Backbone.View.extend({
-	model: new Blog(),
-	tagName: 'tr',
-	initialize: function() {
-		this.template = _.template($('.blogs-list-template').html());
-	},	
-	render: function() {
-		this.$el.html(this.template(this.model.toJSON()));
-		return this;
-	}
-});
-
-var BlogsView = Backbone.View.extend({
-	model: new Blogs(),
-	el: $('#blist'),
-	initialize: function() {		
-		this.model.on('add', this.render, this);
-		this.model.fetch();
-	},
-	render: function() {
-		var self = this;
-		this.$el.html('');
-		_.each(this.model.toArray(), function(blog) {
-			self.$el.append((new BlogView({model: blog})).render().$el);
-		},this);		
-	}
-});
-
-var blogsView = new BlogsView();
